@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -40,7 +41,12 @@ func NextDate(now time.Time, dstart, repeat string) (string, error) {
 
 		return nextDate, nil
 	case "m":
-		return "", nil
+		nextDate, err := caseMonthDay(now, dstartTime, splitRepeat)
+		if err != nil {
+			return "", err
+		}
+
+		return nextDate, nil
 	default:
 		return "", fmt.Errorf("invalid character")
 	}
@@ -116,6 +122,94 @@ func caseWeekDay(now, dstartTime time.Time, splitRepeat []string) (string, error
 	}
 
 	return dstartTime.Format(configs.DateFormat), nil
+}
+
+func caseMonthDay(now, dstartTime time.Time, splitRepeat []string) (string, error) {
+	if len(splitRepeat) < 2 || len(splitRepeat) > 3 {
+		return "", fmt.Errorf("error the monthDay is not specified or incorrectly")
+	}
+
+	monthDays := strings.Split(splitRepeat[1], ",")
+	if len(monthDays) == 0 {
+		return "", fmt.Errorf("error incorrectly monthDays")
+	}
+	var day [32]bool
+	var lastDayMonth bool
+	var secondLastDayMonth bool
+	for _, val := range monthDays {
+		switch val {
+		case "-1":
+			lastDayMonth = true
+			day[31] = true
+		case "-2":
+			secondLastDayMonth = true
+			day[30] = true
+		default:
+			valInt, err := strconv.Atoi(val)
+			if valInt < 1 || valInt > 31 {
+				return "", fmt.Errorf("error day specified incorrectly")
+			}
+			if err != nil {
+				return "", fmt.Errorf("error converted atoi monthDay: %v", val)
+			}
+			day[valInt] = true
+		}
+	}
+
+	var month [13]bool
+	if len(splitRepeat) == 3 {
+		months := strings.Split(splitRepeat[2], ",")
+		if len(months) == 0 {
+			return "", fmt.Errorf("error incorrectly months")
+		}
+		for _, val := range months {
+			valInt, err := strconv.Atoi(val)
+			if valInt < 1 || valInt > 12 {
+				return "", fmt.Errorf("error day specified incorrectly")
+			}
+			if err != nil {
+				return "", fmt.Errorf("error converted atoi month: %v", val)
+			}
+			month[valInt] = true
+		}
+	} else {
+		for ind, _ := range month {
+			month[ind] = true
+		}
+	}
+
+	if afterNow(dstartTime, now) {
+		dstartTime = now
+	}
+
+	dstartTime = dstartTime.AddDate(0, 0, 1)
+	for {
+		log.Println(endOfMonth(dstartTime))
+
+		if dstartTime == endOfMonth(dstartTime) {
+			log.Println(dstartTime)
+			if lastDayMonth && month[int(dstartTime.Month())] {
+				break
+			}
+		}
+		if dstartTime == endOfMonth(dstartTime).AddDate(0, 0, -1) {
+			if secondLastDayMonth && month[int(dstartTime.Month())] {
+				break
+			}
+		}
+		log.Println(dstartTime)
+		if day[int(dstartTime.Day())] && month[int(dstartTime.Month())] {
+			break
+		}
+		dstartTime = dstartTime.AddDate(0, 0, 1)
+	}
+
+	return dstartTime.Format(configs.DateFormat), nil
+}
+
+func endOfMonth(t time.Time) time.Time {
+	year, month, _ := t.Date()
+	return time.Date(year, month+1, 0, 0, 0, 0, 0, t.Location())
 }
 
 func afterNow(dstartTime, now time.Time) bool {
