@@ -8,9 +8,9 @@ import (
 	"github.com/azoma13/ToDo_List_Practicum/internal/service"
 )
 
-func NextDateHandler(w http.ResponseWriter, r *http.Request) {
+func nextDateHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		service.SendErrorResponse(w, http.StatusMethodNotAllowed, "invalid request method")
+		service.SendResponse(w, http.StatusMethodNotAllowed, map[string]string{"error": "invalid request method"})
 		return
 	}
 
@@ -20,17 +20,17 @@ func NextDateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	nowTime, err := time.Parse(configs.DateFormat, now)
 	if err != nil {
-		service.SendErrorResponse(w, http.StatusBadRequest, "incorrect time format")
+		service.SendResponse(w, http.StatusBadRequest, map[string]string{"error": "incorrect time format"})
 		return
 	}
 	nextDate, err := service.NextDate(nowTime, date, repeat)
 	if err != nil {
-		service.SendErrorResponse(w, http.StatusInternalServerError, err.Error())
+		service.SendResponse(w, http.StatusInternalServerError, map[string]string{"error": err.Error()})
 		return
 	}
 	_, err = w.Write([]byte(nextDate))
 	if err != nil {
-		service.SendErrorResponse(w, http.StatusBadRequest, err.Error())
+		service.SendResponse(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
 		return
 	}
 }

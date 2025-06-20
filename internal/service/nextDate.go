@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -68,7 +67,7 @@ func caseDay(now, dstartTime time.Time, splitRepeat []string) (string, error) {
 	}
 
 	dstartTime = dstartTime.AddDate(0, 0, nextDay)
-	for afterNow(dstartTime, now) {
+	for AfterNow(dstartTime, now) {
 		dstartTime = dstartTime.AddDate(0, 0, nextDay)
 	}
 
@@ -78,7 +77,7 @@ func caseDay(now, dstartTime time.Time, splitRepeat []string) (string, error) {
 func caseYear(now, dstartTime time.Time) string {
 
 	dstartTime = dstartTime.AddDate(1, 0, 0)
-	for afterNow(dstartTime, now) {
+	for AfterNow(dstartTime, now) {
 		dstartTime = dstartTime.AddDate(1, 0, 0)
 	}
 
@@ -108,7 +107,7 @@ func caseWeekDay(now, dstartTime time.Time, splitRepeat []string) (string, error
 		arrWeekDay[wd-1] = true
 	}
 
-	if afterNow(dstartTime, now) {
+	if AfterNow(dstartTime, now) {
 		dstartTime = now
 	}
 
@@ -178,16 +177,13 @@ func caseMonthDay(now, dstartTime time.Time, splitRepeat []string) (string, erro
 		}
 	}
 
-	if afterNow(dstartTime, now) {
+	if AfterNow(dstartTime, now) {
 		dstartTime = now
 	}
 
 	dstartTime = dstartTime.AddDate(0, 0, 1)
 	for {
-		log.Println(endOfMonth(dstartTime))
-
 		if dstartTime == endOfMonth(dstartTime) {
-			log.Println(dstartTime)
 			if lastDayMonth && month[int(dstartTime.Month())] {
 				break
 			}
@@ -197,7 +193,6 @@ func caseMonthDay(now, dstartTime time.Time, splitRepeat []string) (string, erro
 				break
 			}
 		}
-		log.Println(dstartTime)
 		if day[int(dstartTime.Day())] && month[int(dstartTime.Month())] {
 			break
 		}
@@ -212,7 +207,7 @@ func endOfMonth(t time.Time) time.Time {
 	return time.Date(year, month+1, 0, 0, 0, 0, 0, t.Location())
 }
 
-func afterNow(dstartTime, now time.Time) bool {
+func AfterNow(dstartTime, now time.Time) bool {
 	oneDay := 24 * time.Hour
 
 	dstartTime = dstartTime.Truncate(oneDay)

@@ -10,6 +10,7 @@ import (
 const (
 	DateFormat = "20060102"
 	WebDir     = "./web"
+	Limit      = 50
 )
 
 var (
