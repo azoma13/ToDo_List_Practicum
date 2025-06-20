@@ -23,7 +23,11 @@ func GetTasksDB(limit int) ([]*models.Task, error) {
 }
 
 func GetTasksWithSearchDB(search string, limit int) ([]*models.Task, error) {
-	query := `SELECT * FROM scheduler WHERE title LIKE ? OR comment LIKE ? ORDER BY date LIMIT ?`
+	query := `
+		SELECT * FROM scheduler 
+		WHERE title LIKE ? OR comment LIKE ? 
+		ORDER BY date LIMIT ?
+	`
 
 	rows, err := DB.Query(query, search, search, limit)
 	if err != nil {
