@@ -14,6 +14,8 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 		getTaskByIdHandler(w, r)
 	case http.MethodPut:
 		updateTaskHandler(w, r)
+	case http.MethodDelete:
+		deleteTaskHandler(w, r)
 	default:
 		service.SendResponse(w, http.StatusMethodNotAllowed, map[string]string{"error": "error method not allowed"})
 	}

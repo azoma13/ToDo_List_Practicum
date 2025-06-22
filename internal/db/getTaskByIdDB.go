@@ -6,7 +6,7 @@ import (
 	"github.com/azoma13/ToDo_List_Practicum/models"
 )
 
-func GetTaskByIdDB(id int) (*models.Task, error) {
+func GetTaskByIdDB(id string) (*models.Task, error) {
 	query := `
 		SELECT * FROM scheduler
 		WHERE id = ? 

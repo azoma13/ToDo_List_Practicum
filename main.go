@@ -20,7 +20,7 @@ func main() {
 		log.Fatalf("error init data base: %v", err)
 	}
 
-	server.Run()
+	err = server.Run()
 	if err != nil {
 		panic(err)
 	}

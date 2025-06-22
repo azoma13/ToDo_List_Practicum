@@ -7,13 +7,13 @@ import (
 )
 
 func UpdateTaskDB(task *models.Task) error {
-	query := `
+	exec := `
 		UPDATE scheduler 
 		SET date = ?, title = ?, comment = ?, repeat = ? 
 		WHERE id = ?
 	`
 
-	res, err := DB.Exec(query, &task.Date, &task.Title, &task.Comment, &task.Repeat, &task.ID)
+	res, err := DB.Exec(exec, &task.Date, &task.Title, &task.Comment, &task.Repeat, &task.ID)
 	if err != nil {
 		return err
 	}
