@@ -7,6 +7,7 @@ toolchain go1.23.10
 replace go1f => ./
 
 require (
+	github.com/golang-jwt/jwt/v5 v5.2.2
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/joho/godotenv v1.5.1
 	github.com/stretchr/testify v1.10.0

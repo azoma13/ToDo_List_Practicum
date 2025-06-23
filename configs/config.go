@@ -16,6 +16,8 @@ const (
 var (
 	ToDoListPort   string
 	ToDoListDBFile string
+	TODOPassword   string
+	JwtKey         = []byte("jwt_secret") // хардкод
 )
 
 func Environment() error {
@@ -26,5 +28,6 @@ func Environment() error {
 
 	ToDoListPort = os.Getenv("TODOLIST_PORT")
 	ToDoListDBFile = os.Getenv("TODOLIST_DBFILE")
+	TODOPassword = os.Getenv("TODO_PASSWORD")
 	return nil
 }

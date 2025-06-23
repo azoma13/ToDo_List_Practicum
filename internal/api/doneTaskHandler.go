@@ -40,5 +40,5 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	service.SendResponse(w, http.StatusBadRequest, struct{}{})
+	service.SendResponse(w, http.StatusOK, struct{}{})
 }
