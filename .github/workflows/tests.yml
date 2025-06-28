@@ -28,7 +28,7 @@ jobs:
       run: |
         cp .env.example .env
         CGO_ENABLED=0 GOOS=linux go run main.go &
-        sleep 10
+        sleep 100
         go test ./tests
         
         
